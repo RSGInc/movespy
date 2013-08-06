@@ -1,0 +1,9 @@
+$ cat .gitignore
+templates/
+docs/_build/
+build/
+dist/
+MANIFEST
+*.pyc
+*.csv
+*.xml
