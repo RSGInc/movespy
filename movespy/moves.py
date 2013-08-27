@@ -227,7 +227,9 @@ class Moves(object):
         data_types = 'u4,u2,u2,u2,f4'.split(',')
         activity = numpy.fromiter(activity,dtype = zip(names, data_types))
 
-        self.cur.execute('drop database %s'%(self.prefix + 'output'))
+        if self.cleanup:
+
+            self.cur.execute('drop database %s'%(self.prefix + 'output'))
 		
         
         return (output, activity)
