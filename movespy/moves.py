@@ -64,7 +64,7 @@ class Output(object):
     
     Can only be iterated over once.
 
-    If cleanup is True, then the output table is dropped
+    If cleanup is True, then the output database is dropped
     upon Python garbage collection.
 
     The field attribute is a convenient way to get the
@@ -84,10 +84,6 @@ class Output(object):
     def __del__(self):
         if self.cleanup:
             self.cur.execute('drop database %s'%self.db)
-
-        self.cur.connection.close()
-        self.cur.close()
-
 
     def __iter__(self):
         return self.cur
@@ -174,11 +170,6 @@ class Moves(object):
         self.importscript_template = templates.importscript_template
 
         self.cleanup = True
-
-    def __del__(self):
-        self.cur.connection.close()
-        self.cur.close()
-
 
         
     def run(self, output_level = 1):
@@ -455,12 +446,6 @@ class Moves(object):
          'process':'emissionprocess',
          'source':'sourceusetype'}
 
-        #postive action for more rows
-
-        #case 1: 'breakdown' key is not in options, or is None, or is empty: return few rows
-
-        #case 2: 'breakdown' key is in options, and includes at least one valid choice: return more rows
-
 
         if not self.options.get('breakdown'):
             return None
@@ -539,7 +524,7 @@ if __name__ == "__main__":
     options = {'detail': 'average'}
 
     moves = Moves(activity, options)
-    emissions_out, activity_out = moves.run(2)
+    emissions_out = moves.run(2)
     
     
     
