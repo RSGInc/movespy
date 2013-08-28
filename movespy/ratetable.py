@@ -90,11 +90,126 @@ def getRateTable(activity,
     return ratetable
 
                 
+
+def getAverageSpeedRateTable(activity,
+                 roadtype_grade_speed,
+                 source_type_ids = None):
+
+
+    '''Get an emissions rate lookup table.
+
+    Returns a nested dict keyed by pollutant, source type, roadtype, grade, speed
+
+    All values are for one vehicle hour
+
+    '''
+
+    if source_type_ids is None:
+        source_type_ids = (11,21,31,32,41,42,43,51,52,53,54,61,62)
         
+
+    sourcetypeshare = 1.0 / len(source_type_ids)
+
+    activity['links'] = None
+
+    linkid = 5
+    link_lookup = {}
+    links = {}
+    
+    for roadtype, grade, speed in roadtype_grade_speed:
+
+        link_lookup[linkid] = dict(roadtype = roadtype,
+                                   grade = grade,
+                                   speed = speed)
+
+
+        link = {'grade': float(grade),
+                'length': float(speed) / 2.,
+                'road_type': roadtype,
+                'speed': float(speed), #was 30
+                'volume': 2.} #one vehicle hour
+
+        link['source_distr'] = dict.fromkeys(source_type_ids, sourcetypeshare)
+
+        links[linkid] = link
+
+        linkid += 1
+
+    activity['links'] = links
+
+
+    options = {'detail':'average',
+               'breakdown':['source']}
+
+
+
+    m = moves.Moves(activity, options)
+
+    moves_out = m.run()
+    
+
+    ratetable = {}
+
+    for row in moves_out:
+        linkid = row['link']
+
+        roadtype = link_lookup[linkid]['roadtype']
+        grade = link_lookup[linkid]['grade']
+        speed = link_lookup[linkid]['speed']
+
+        sourcetype = row['source']
+        pollutant = row['pollutant']
+
+        if row['quantity'] is None:
+            quantity = 0.0
+        else:
+            quantity = row['quantity'] / sourcetypeshare
+
+        a = ratetable.setdefault(pollutant, {})
+
+        b = a.setdefault(sourcetype, {})
+
+        c = b.setdefault(roadtype, {})
+
+        d = c.setdefault(grade, {})
+
+        d[speed] = quantity
+
+
+
+    return ratetable
+
+                
+##        a = ratetable.setdefault(pollutant, {})
+##
+##        b = a.setdefault(sourcetype, {})
+##
+##        b[opmode] = quantity
+       
 
 
 if __name__ == "__main__":
     import datetime
+
+##    start = datetime.datetime.now()
+##
+##
+##    activity =  {'age_distr': dict.fromkeys((11,21,31,32,41,42,43,51,52,53,54,61,62),
+##                                            {5: 1.0}),
+##                 'county': 50027,
+##                 'day_type': 5,
+##                 'hour': 16,
+##                 'month': 6,
+##                 'year': 2015}
+##
+##
+##    table =  getRateTable(activity)
+##
+##    end = datetime.datetime.now()
+##    print 'elapsed time:', (end - start).total_seconds()
+##
+##    #884 seconds or about 15 minutes for all source types and op modes
+
 
     start = datetime.datetime.now()
 
@@ -108,16 +223,17 @@ if __name__ == "__main__":
                  'year': 2015}
 
 
-    table =  getRateTable(activity)
+    table =  getAverageSpeedRateTable(activity,
+                                      [(5, 1., 20.),(4, 1., 50.)])
 
     end = datetime.datetime.now()
     print 'elapsed time:', (end - start).total_seconds()
 
-    #884 seconds or about 15 minutes for all source types and op modes
+    # seconds or about 15 minutes for all source types and op modes    
 
     
 
-    
+
 
     
 
