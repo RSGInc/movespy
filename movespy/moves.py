@@ -40,25 +40,67 @@ How to Use this Module
 3. If needed, generate a default
    age distribution for your `activity` parameter by using `getDefaultAgeDistribution`.
 4. Create an instance of the `Moves` class: ``m = movespy.moves.Moves(activity, options)``
-5. Run MOVES: ``emission_out, activity_out = m.run()``
-6. Use the output: ``print emission_out[:10]``
+5. Run MOVES: ``emission_out = m.run()``
+6. Use the output: ``print emission_out.next()``
 '''
 
 import os
 import xml.etree.ElementTree as et
 import subprocess
 import datetime
-import collections
 
 import MySQLdb
-import numpy
 
 import templates
 import movespy_settings
 
 
 
+class Output(object):
+    '''The output from a MOVES run.
 
+    An iterator over the rows of the movesoutput table.
+    Rows are returned as dictionaries.
+    
+    Can only be iterated over once.
+
+    If cleanup is True, then the output table is dropped
+    upon Python garbage collection.
+
+    The field attribute is a convenient way to get the
+    keys that each dictionary will have without retrieving
+    any rows. 
+        
+    '''
+
+    
+
+    def __init__(self, cur, db, cleanup, fields):
+        self.cleanup = cleanup
+        self.cur = cur
+        self.db = db
+        self.fields = fields
+
+    def __del__(self):
+        if self.cleanup:
+            self.cur.execute('drop database %s'%self.db)
+
+        self.cur.connection.close()
+        self.cur.close()
+
+
+    def __iter__(self):
+        return self.cur
+
+    def next(self):
+        return self.cur.next()
+
+
+    
+
+        
+
+    
 		
 
 
@@ -82,7 +124,7 @@ class Moves(object):
                      'links': links}
     >>> options = {'detail': 'average'}
     >>> m = Moves(activity, options)
-    >>> emissions_out, activity_out = m.run()
+    >>> emissions_out = m.run()
         
     '''
 
@@ -133,13 +175,16 @@ class Moves(object):
 
         self.cleanup = True
 
+    def __del__(self):
+        self.cur.connection.close()
+        self.cur.close()
+
+
         
     def run(self, output_level = 1):
         '''Use this method to run MOVES.
 
-        Returns a tuple of two items: the emissions output and the
-        activity output. The emissions output and activity output
-        are each numpy structured arrays'
+        Returns an Output instance.
 
         '''
 
@@ -200,40 +245,41 @@ class Moves(object):
             self.cur.execute('drop database movesworker')
             self.cur.execute('drop database %s'%(self.prefix + 'input'))
         
-        self.cur.execute('''   select  linkid as link,
-                                                pollutantid as pollutant,
-                                                processid as process,
-                                                sourcetypeid as source,
-                                                fueltypeid as fuel,
-                                                modelyearid as model_year,
-                                                emissionquant as quantity
-                                        from {0}output.movesoutput'''.format(self.prefix))
-        output = self.cur.fetchall()
-        names = 'link,pollutant,process,source,fuel,model_year,quantity'.split(',')
-        data_types = 'u4,u2,u2,u2,u2,u2,f4'.split(',')
-        output = numpy.fromiter(output,dtype = zip(names, data_types)) 
 
-
-        self.cur.execute('''     select  linkid as link,
-                                                sourcetypeid as source,
-                                                fueltypeid as fuel,
-                                                modelyearid as model_year,
-                                                activity as distance
-                                                from {0}output.movesactivityoutput 
-                                            where activitytypeid = 1
-                                            '''.format(self.prefix))
-        activity = self.cur.fetchall()
-        names = 'link,source,fuel,model_year,distance'.split(',')
-        data_types = 'u4,u2,u2,u2,f4'.split(',')
-        activity = numpy.fromiter(activity,dtype = zip(names, data_types))
-
-        if self.cleanup:
-
-            self.cur.execute('drop database %s'%(self.prefix + 'output'))
-		
+        choices = dict([('source','sourcetypeid'),
+                   ('model_year','modelyearid'),
+                   ('fuel','fueltypeid'),
+                   ('process','processid')])
         
-        return (output, activity)
-         
+        
+        optional_fields_selection = ''
+
+        if not self.options.get('breakdown'):
+            pass
+        else:
+            for field in self.options['breakdown']:
+                assert field in choices
+                optional_fields_selection += '{} as {},\n'.format(choices[field], field)
+            
+
+        db = '{}output'.format(self.prefix)
+        
+        cur = MySQLdb.connect(host = 'localhost',
+                              db = db).cursor(MySQLdb.cursors.SSDictCursor)
+
+
+        cur.execute('''select  linkid as link,pollutantid as pollutant,
+                       {}
+                       emissionquant as quantity
+                       from {}output.movesoutput'''.format(optional_fields_selection,
+                                                           self.prefix))
+
+        fields = zip(*cur.description)[0]
+
+
+        return Output(cur, db, self.cleanup, fields)
+
+
 
 
     @property
@@ -341,9 +387,6 @@ class Moves(object):
     
 
 
-    def __del__(self):
-        self.cur.connection.close()
-        self.cur.close()
 
     def _getCSV(self,query):
         self.cur.execute(query)
@@ -358,6 +401,7 @@ class Moves(object):
     def runspec(self):
         root = et.fromstring(self.runspec_template)
         self._setSelections(root)
+        self._setBreakdown(root)
         root.find('scaleinputdatabase').set('databasename',self.prefix + 'input')
         root.find('outputdatabase').set('databasename',self.prefix + 'output')
         return et.tostring(root)
@@ -401,6 +445,36 @@ class Moves(object):
                     pol_sel.remove(item)
 
         return None
+
+    def _setBreakdown(self, root):
+
+        breakdown_sel = root.find('outputemissionsbreakdownselection')
+
+        choices = {'model_year':'modelyear',
+         'fuel':'fueltype',
+         'process':'emissionprocess',
+         'source':'sourceusetype'}
+
+        #postive action for more rows
+
+        #case 1: 'breakdown' key is not in options, or is None, or is empty: return few rows
+
+        #case 2: 'breakdown' key is in options, and includes at least one valid choice: return more rows
+
+
+        if not self.options.get('breakdown'):
+            return None
+            
+        for field in self.options['breakdown']:
+            assert field in choices
+
+            breakdown_sel.find(choices[field]).set('selected', 'true')
+
+        return None
+
+        
+
+        
         
         
     

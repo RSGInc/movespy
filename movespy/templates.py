@@ -268,12 +268,12 @@ useParameters	No
 	<uncertaintyparameters uncertaintymodeenabled="false" numberofrunspersimulation="0" numberofsimulations="0"/>
 	<geographicoutputdetail description="LINK"/>
 	<outputemissionsbreakdownselection>
-		<modelyear selected="true"/>
-		<fueltype selected="true"/>
-		<emissionprocess selected="true"/>
+		<modelyear selected="false"/>
+		<fueltype selected="false"/>
+		<emissionprocess selected="false"/>
 		<onroadoffroad selected="true"/>
 		<roadtype selected="true"/>
-		<sourceusetype selected="true"/>
+		<sourceusetype selected="false"/>
 		<movesvehicletype selected="false"/>
 		<onroadscc selected="false"/>
 		<offroadscc selected="false"/>
