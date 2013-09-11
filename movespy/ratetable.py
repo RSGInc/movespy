@@ -82,8 +82,8 @@ def getRateTable(activity,
 
         a = ratetable.setdefault(pollutant, {})
 
-        b = a.setdefault(sourcetype, {})
-
+        b = a.setdefault(sourcetype, dict.fromkeys(operating_mode_ids, 0.0))
+        
         b[opmode] = quantity
 
 
