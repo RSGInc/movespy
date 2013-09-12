@@ -1,3 +1,71 @@
+# Copyright (c) 2013, Resource Systems Group, Inc.
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without 
+# modification, are permitted provided that the following conditions are met:
+# 
+#     - Redistributions of source code must retain the above copyright notice, 
+#       this list of conditions and the following disclaimer.
+#     
+#     - Redistributions in binary form must reproduce the above copyright notice, 
+#       this list of conditions and the following disclaimer in the documentation 
+#       and/or other materials provided with the distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+# POSSIBILITY OF SUCH DAMAGE.
+
+''' Functions for calculating total emissions from each of a collection
+of simulations.
+
+Eaxmple::
+
+
+    import movespy.ratetable
+    import movespy.moves
+    import os.path
+
+
+    #create an emissions rate lookup table
+    
+    year = 2010
+
+    age_distr = movespy.moves.getDefaultAgeDistribution(year)
+
+    activity = {'year':year, 'county':50027, 'month':11,
+                'hour': 7, 'day_type': 5, 'age_distr':age_distr}
+
+    ratetable = movespy.ratetable.getRateTable(activity)
+
+
+    #calculate opmode distributions for 30 different simulations
+
+    outputfolder = (r'Q:\Projects\NH\UNH & Durham\2013 model update'
+                    r'\2013 TransModeler Files\after Steve P. tweaks'
+                    r'\Trajectories\Build')
+
+    folders = os.walk(outputfolder).next()[1]
+
+    folders = [os.path.join(outputfolder, f) for f in folders]
+
+
+    #combine opmode distributions and the rate table to calculate total emissions
+    a = calcEmissions(folders, ratetable, processes = 4)
+
+'''
+
+
+
+
+
 
 import os.path
 
@@ -5,11 +73,10 @@ import os.path
 
 def getSourceAttr():
 
-    '''Queries the moves database to git source use type attributes.
+    '''Queries the moves database to get source use type attributes.
     Returns a dictionary keyed by source use type ID. Values
     are dictionaries with keys sourcename, massfactor, alpha, beta, gamma
-    and default mass.
-
+    and default mass. Mass is in metric tonnes. 
     '''
 
     
@@ -50,8 +117,8 @@ def getSourceAttr():
 
 
 def getClassAttr(output_folder):
-    '''Parses the XML parameters files a TransModeler simulation output folder
-    returns a dictionary keyed by Class ID. Values are dictionaries with keys for
+    '''Parses the XML parameters files in a TransModeler simulation output folder.
+    Returns a dictionary keyed by Class ID. Values are dictionaries with keys for
     class_name, and mass_metric_tonnes. 
     '''
 
@@ -154,7 +221,11 @@ def getClassAttr(output_folder):
 
 def getCaliperBinaryTable(loc):
     '''Parses a Caliper binary table (.bin) into a numpy record array. 
-    loc must include table name. the extension (if any) is ignored.'''
+
+    loc: the path to the binary table.
+
+
+    '''
     import csv
     import numpy
     
@@ -185,7 +256,7 @@ def getCaliperBinaryTable(loc):
 
             field_name = reduce(lambda x, y: x + y, field_name, '')
 
-            field_name = field_name.replace('\x00','')
+            field_name = field_name.replace('\x00','')#?
 
 
             data = data[51:]
@@ -272,8 +343,7 @@ def getCaliperBinaryTable(loc):
     
 
 #todo: get grade from caliper
-#default class-source association
-#get veh-id, veh class mapping
+
 
 default_class_source = {    'AB': 42,
                             'B': 42,
@@ -295,11 +365,13 @@ def getOpModes(folder, simple = False, class_source = None):
     The output must include a trajectory file in "standard" format with
     observations every one second.
 
-    `class_source` is a dictionary mapping Class IDs to source type IDs.
+    `class_source` is a dictionary mapping Class IDs to source type IDs. Optional.
+    If not provided a default mapping will be used.
 
     `simple` indicates whether to use a simplified calculation for effect of grade.
+    Optional. The default is False.
 
-    currently grade is always set to zero
+    Currently grade is always set to zero.
 
     '''
 
@@ -368,8 +440,15 @@ def getOpModes(folder, simple = False, class_source = None):
 
 def getTotalEmissions(opmodes, ratetable):
 
-    '''
-    calculate total emissions based on an opmode/source type distribution and a rate table
+    '''Calculate total emissions based on an opmode/source type distribution and a rate table.
+    Returns a dictionary keyed by pollutant ID. Values are total emissions quantities
+    in either grams or kJ.
+
+    Parameters
+
+    opmodes: an opmode distribution as returned by getOpModes
+
+    ratetable: a rate table as returned by ratetable.getRateTable 
     '''
 
 
@@ -396,6 +475,26 @@ def getTotalEmissions(opmodes, ratetable):
 
 
 def calcEmissions(folders, ratetable, simple = False, class_source = None, **args):
+    '''Calculate total emissions for each of several simulations, using multiprocessing.
+
+    folders: a sequence of paths for folders containing simulation outputs.
+
+    rate table: ratetable: a rate table as returned by ratetable.getRateTable
+
+    `class_source` is a dictionary mapping Class IDs to source type IDs. Optional.
+    If not provided a default mapping will be used.
+
+    `simple` indicates whether to use a simplified calculation for effect of grade.
+    Optional. The default is False.
+
+    **args: keyword arguments that are passed on to initialize an instance of
+    multiprocessing.Pool. Defaults to one process. Provide a processes argument
+    to increase the number of processes.
+
+    '''
+
+
+
 
     import functools
 
@@ -420,39 +519,7 @@ def calcEmissions(folders, ratetable, simple = False, class_source = None, **arg
 
     
 
-if __name__ == "__main__":
 
-
-    import movespy.ratetable
-    import movespy.moves
-    import os.path
-
-
-    #create an emissions rate lookup table
-    
-    year = 2010
-
-    age_distr = movespy.moves.getDefaultAgeDistribution(year)
-
-    activity = {'year':year, 'county':50027, 'month':11,
-                'hour': 7, 'day_type': 5, 'age_distr':age_distr}
-
-    ratetable = movespy.ratetable.getRateTable(activity)
-
-
-    #calculate opmode distributions for 30 different simulations
-
-    outputfolder = (r'Q:\Projects\NH\UNH & Durham\2013 model update'
-                    r'\2013 TransModeler Files\after Steve P. tweaks'
-                    r'\Trajectories\Build')
-
-    folders = os.walk(outputfolder).next()[1]
-
-    folders = [os.path.join(outputfolder, f) for f in folders]
-
-
-    #combine opmode distributions and the rate table to calculate total emissions
-    a = calcEmissions(folders, ratetable, processes = 4)
 
 
 

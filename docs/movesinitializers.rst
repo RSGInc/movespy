@@ -117,11 +117,14 @@ for the :class:`Moves` class initializer. Study this section to learn the struct
     A mapping::
 
         {'detail':<detail>,
-         'pollutants':<pollutants>}
+         'pollutants':<pollutants>,
+         'breakdown':<breakdown_selections>}
          
     This is the root level of the `<options>` parameter. The `'pollutants'` key 
     is optional. If it is not included then all pollutants 
-    will be calculated.   
+    will be calculated. The `'breakdown'` key 
+    is optional. If it is not included the output will be disaggregated by link and pollutant
+    only.     
 
 
   <pollutants>
@@ -184,6 +187,17 @@ for the :class:`Moves` class initializer. Study this section to learn the struct
 
   <speed>
     A real number giving the average speed in miles per hour
+    
+  <breakdown_selections>
+    An iterable::
+    
+        [<breakdown_selection>, ...]
+        
+    Specifies by which fields the output should be disaggregated.
+
+  <breakdown_selection>
+    One of `'model_year'`, `'fuel'`, `'process'`, or `'source'`. 
+  
       
 
 
