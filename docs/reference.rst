@@ -1,10 +1,22 @@
-=========
+*********
 Reference
-=========
+*********
 
 
 
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
+.. automodule:: movespy.moves
+   :members:
+
+.. automodule:: movespy.trajectory
+   :members:
+
+.. automodule:: movespy.ratetable
+   :members:
+
+
+
+   
+   
+   
