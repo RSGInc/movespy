@@ -231,7 +231,7 @@ in the year 2015. To generate the look up table we first import the :mod:`movesp
 
     import movespy.ratetable
     
-Then we run the :func:`movespy.ratetable.getRateTable function`, with our activity dictionary as the argument::
+Then we run the :func:`movespy.ratetable.getRateTable` function, with our activity dictionary as the argument::
 
     look_up_table = movespy.ratetable.getRateTable(activity)
     
