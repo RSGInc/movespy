@@ -41,6 +41,7 @@ import moves
 def getRateTable(activity,
                  operating_mode_ids = None,
                  source_type_ids = None):
+    #to do: add option to select pollutants (for faster runs)
 
     '''Get an emissions rate lookup table.
 
@@ -65,8 +66,8 @@ def getRateTable(activity,
 
     Example::
 
-        activity =  {'age_distr': dict.fromkeys((11,21,31,32,41,42,43,51,52,53,54,61,62),
-                                            {5: 1.0}),
+        activity =  {'age_distr': {21: {5: 1.0},
+                                   11: {5: 1.0}},
                      'county': 50027,
                      'day_type': 5,
                      'hour': 16,
@@ -74,7 +75,9 @@ def getRateTable(activity,
                      'year': 2015}
 
 
-        table =  getRateTable(activity)
+        table =  getRateTable(activity,
+                              operating_mode_ids = [0, 1],
+                              source_type_ids = [11, 21])
 
 
     '''
@@ -88,6 +91,8 @@ def getRateTable(activity,
     if source_type_ids is None:
         source_type_ids = (11,21,31,32,41,42,43,51,52,53,54,61,62)
         
+    assert all([st in activity['age_distr'] for st in source_type_ids])
+
 
     sourcetypeshare = 1.0 / len(source_type_ids)
 
@@ -125,6 +130,7 @@ def getRateTable(activity,
 
 
     m = moves.Moves(activity, options)
+    m.cleanup = False
 
     moves_out = m.run()
     
@@ -204,7 +210,9 @@ def getAverageSpeedRateTable(activity,
 
     if source_type_ids is None:
         source_type_ids = (11,21,31,32,41,42,43,51,52,53,54,61,62)
-        
+
+
+    assert all([st in activity['age_distr'] for st in source_type_ids])
 
     sourcetypeshare = 1.0 / len(source_type_ids)
 
@@ -228,6 +236,8 @@ def getAverageSpeedRateTable(activity,
                 'volume': 2.} #one vehicle hour
 
         link['source_distr'] = dict.fromkeys(source_type_ids, sourcetypeshare)
+
+
 
         links[linkid] = link
 
@@ -279,8 +289,6 @@ def getAverageSpeedRateTable(activity,
 
                 
 
-
-    
 
 
 
