@@ -223,7 +223,7 @@ Using :mod:`movespy` to Generate Emission Rate Look-up Tables
 =============================================================
 
 To generate a look-up table of emissions rates, you will need to provide an activity argument that is similar
-to the activity argument for the movespy.moves.Moves initializer, except that it does not include 
+to the activity argument for the :class:`movespy.moves.Moves` initializer, except that it does not include 
 the 'links' key/value pair. For example::
 
     activity =  {'age_distr': dict.fromkeys((11,21,31,32,41,42,43,51,52,53,54,61,62),
@@ -242,12 +242,12 @@ in the year 2015. To generate the look up table we first import the :mod:`movesp
     
 Then we run the :func:`movespy.ratetable.getRateTable` function, with our activity dictionary as the argument::
 
-    look_up_table = movespy.ratetable.getRateTable(activity)
+    table = movespy.ratetable.getRateTable(activity)
     
 The result is a nested dict with keys for pollutant, source type, and operating mode. The 
 values are emissions rates in either grams or kJ per vehicle-hour. For example::
 
-    >>> print look_up_table[1][21][3]
+    >>> print table[1][21][3]
     123.456
     
 If you want to create a flat file look up table, you could do::
@@ -256,11 +256,11 @@ If you want to create a flat file look up table, you could do::
           
     rows = []
     
-    for pollutant in look_up_table:
-        for source_type in look_up_table[pollutant]:
-            for op_mode in look_up_table[pollutant][source_type]:
+    for pollutant in table:
+        for source_type in table[pollutant]:
+            for op_mode in table[pollutant][source_type]:
             
-                rate = look_up_table[pollutant][source_type][opmode]
+                rate = table[pollutant][source_type][op_mode]
                 
                 rows.append(dict(pollutant = pollutant,
                                  source_type = source_type,
@@ -269,7 +269,7 @@ If you want to create a flat file look up table, you could do::
                                  
                                  
     import csv
-    with open('look_up_table.csv', 'w') as f:
+    with open('table.csv', 'wb') as f:
         
         d = csv.DictWriter(f, header)
         
