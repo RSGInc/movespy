@@ -125,7 +125,7 @@ class Moves(object):
     '''
 
 
-    tablenames = ['links', 'source_distr', 'age_distr', 'fuel_supply', 'fuel_form', 'meteor', 'opmode_distr']
+    tablenames = ['links', 'source_distr', 'age_distr', 'fuel_supply', 'fuel_form', 'meteor', 'opmode_distr', 'drive_schedule']
 
     tablepaths = ['link/parts/link/filename',
                            'linksourcetypehour/parts/linkSourceTypeHour/filename',
@@ -133,7 +133,8 @@ class Moves(object):
                            'fuel/parts/FuelSupply/filename',
                            'fuel/parts/FuelFormulation/filename',
                            'zonemonthhour/parts/zoneMonthHour/filename',
-                           'linkopmodedistribution/parts/opModeDistribution/filename']
+                           'linkopmodedistribution/parts/opModeDistribution/filename',
+                  'driveschedulesecondlink/parts/driveScheduleSecondLink/filename']
 
     process_pollutant = {1:(1,2,3,30,91,101,102,111,112),
                      9:(116,),
@@ -170,6 +171,8 @@ class Moves(object):
         self.importscript_template = templates.importscript_template
 
         self.cleanup = True
+
+        assert options['detail'] in ['average','opmode','driveschedule']
 
         
     def run(self, output_level = 1):
@@ -319,13 +322,11 @@ class Moves(object):
         activity = self.activity
         options = self.options
         result = 'sourceTypeID,hourDayID,linkID,polProcessID,opModeID,opModeFraction\n'
-        if options['detail'] == 'average':
-            pass
-        elif options['detail'] == 'opmode':
+        if options['detail'] == 'opmode':
             hour_day_id = str(Moves._hourToHourID(activity['hour'])) + str(activity['day_type'])
             for link_id, link in activity['links'].iteritems():
-                for source_type_id in link['opmode_distr'].keys(): #error will be thrown here if no opmode distr (I'm assuming we can leave out opmodes link-wise)
-                    for process_id, pollutant_ids in Moves.process_pollutant.items(): #options['proc_pol_sel'].iteritems():
+                for source_type_id in link['opmode_distr'].keys(): 
+                    for process_id, pollutant_ids in Moves.process_pollutant.items():
                         for pollutant_id in pollutant_ids:
                             pollutant_process_id = pollutant_id * 100 + process_id
                             op_mode_dist = link['opmode_distr'][source_type_id].copy()
@@ -341,9 +342,37 @@ class Moves(object):
                                        operating_mode_id,
                                        fraction]
                                 result += ','.join([str(x) for x in row]) + '\n'
-        else:
-            raise ValueError, 'Detail level is {0}, but must be either "average" or "opmode"'.format(options['detail'].get(link_id))
         return result
+
+
+
+    @property
+    def drive_schedule_table(self):
+        options = self.options
+        activity = self.activity
+        
+        result = 'linkID,secondID,speed,grade\n'
+
+        if options['detail'] == 'driveschedule':
+            for link_id, link in activity['links'].iteritems():
+                second_id = 0
+                for speed, grade in link['driveschedule']:
+                    second_id += 1
+                    row = map(str, [link_id, second_id, speed, grade])
+                    result += ','.join(row) + '\n'
+
+        return result
+            
+            
+            
+
+            
+    
+        
+    
+
+
+
 
     @property
     def fuel_supply_table(self):
@@ -375,7 +404,7 @@ class Moves(object):
                     WHERE monthID = %s AND zoneID = %s0 AND hourID = %s'''
         sql = sql%(self.activity['month'],self.activity['county'],hour_id)
         return self._getCSV(sql)
-    
+
 
 
 

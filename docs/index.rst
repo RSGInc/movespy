@@ -329,7 +329,7 @@ for the :class:`Moves` class initializer. Study this section to learn the struct
 
 
   <detail>
-    Either ``'average'`` or ``'opmode'``.
+    One of ``'average'``, ``'opmode'``, or ``'driveschedule'``.
         
 
   <hour>
@@ -355,10 +355,13 @@ for the :class:`Moves` class initializer. Study this section to learn the struct
          'speed':<speed>,
          'grade':<grade>,
          'source_distr':<source_distr>,
-         'opmode_distr':<opmode_distr>}
+         'opmode_distr':<opmode_distr>,
+         'driveschedule':<driveschedule>}
         
     The ``'opmode_distr'`` key and its value are only required if the value for
     the ``'detail'`` key in the `<options>` dictionary is ``'opmode'``.
+    The ``'driveschedule'`` key and its value are only required if the value for
+    the ``'detail'`` key in the `<options>` dictionary is ``'driveschedule'``.
 
 
   <link_id>
@@ -479,6 +482,12 @@ for the :class:`Moves` class initializer. Study this section to learn the struct
 
   <breakdown_selection>
     One of `'model_year'`, `'fuel'`, `'process'`, or `'source'`. 
+    
+  <driveschedule>
+    A sequence of tuples. Each tuple contains two items: Speed in miles per hour (a float), 
+    and grade in percent (a float). Represents a vehicle trajectory. Must be sorted by time, and
+    observations must be one second apart.    
+  
   
       
 
