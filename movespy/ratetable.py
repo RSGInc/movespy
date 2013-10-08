@@ -39,6 +39,7 @@ import moves
 
 
 def getRateTable(activity,
+                 options,
                  operating_mode_ids = None,
                  source_type_ids = None):
     #to do: add option to select pollutants (for faster runs)
@@ -48,8 +49,12 @@ def getRateTable(activity,
     Parameters
 
     
-    - activity: a dictionary structured exactly like the activity paramter
+    - activity: a dictionary structured exactly like the activity parameter
       to the moves.Moves initializer, except that it does not have the `links` key.
+
+    - options: a dictionary structured like the options parameter to the moves.Moves
+      initializer, except that only the 'breakdown' key is allowed, and the only
+      value allowed in the list is 'process'
 
     - operating_mode_ids: a sequence of operating mode IDs to be included in the lookup
       table. Optional; if it is not included all operating modes
@@ -61,8 +66,10 @@ def getRateTable(activity,
 
     Return Value
 
-    Returns a nested dict keyed by pollutant, source type and opmode.
-    All values are for one vehicle hour, and are either in grams or kJ. 
+    Returns a list of dictionaries.
+    Each dictionary has keys for opmode, pollutant, source, and quantity;
+    and optionally for process.
+    All quantity values are for one vehicle hour, and are either in grams or kJ. 
 
     Example::
 
@@ -74,8 +81,11 @@ def getRateTable(activity,
                      'month': 6,
                      'year': 2015}
 
+        options = {}
+
 
         table =  getRateTable(activity,
+                              options,
                               operating_mode_ids = [0, 1],
                               source_type_ids = [11, 21])
 
@@ -94,6 +104,8 @@ def getRateTable(activity,
     assert all([st in activity['age_distr'] for st in source_type_ids])
 
 
+    num_source_types = len(source_type_ids)
+
     sourcetypeshare = 1.0 / len(source_type_ids)
 
     activity['links'] = None
@@ -111,7 +123,7 @@ def getRateTable(activity,
                 'length': 15.,
                 'road_type': 5,
                 'speed': 30.,
-                'volume': 2.} #one vehicle hour
+                'volume': 2. * num_source_types} #one vehicle hour for each source type
 
         link['source_distr'] = dict.fromkeys(source_type_ids, sourcetypeshare)
 
@@ -124,38 +136,42 @@ def getRateTable(activity,
     activity['links'] = links
 
 
-    options = {'detail':'opmode',
+    options2 = {'detail':'opmode',
                'breakdown':['source']}
 
+    if 'process' in options.get('breakdown',[]):
+        options2['breakdown'].append('process')
 
 
-    m = moves.Moves(activity, options)
-    m.cleanup = False
+    m = moves.Moves(activity, options2)
 
     moves_out = m.run()
     
 
-    ratetable = {}
+    ratetable = list(moves_out)
 
-    for row in moves_out:
-        linkid = row['link']
+    #what could go wrong with the db table?
+    #in the perfect world, there would be one row for every
+    #combination  opmode, pollutant, source, and process.
+    #in the real world, it could be that if a certain combination
+    #has a quantity of zero, the quanity could be None (null),
+    #or maybe there is no row at all
+
+    #so how to make it all agree?
+    #for now, just set nulls to 0, and ignore the
+    #possibility of missing rows
+    
+
+
+    for row in ratetable:
+        linkid = row.pop('link')
 
         opmode = link_lookup[linkid]
 
-        sourcetype = row['source']
-        pollutant = row['pollutant']
+        row['opmode'] = opmode    
 
         if row['quantity'] is None:
-            quantity = 0.0
-        else:
-            quantity = row['quantity'] / sourcetypeshare
-
-        a = ratetable.setdefault(pollutant, {})
-
-        b = a.setdefault(sourcetype, dict.fromkeys(operating_mode_ids, 0.0))
-        
-        b[opmode] = quantity
-
+            row['quantity'] = 0.0
 
     return ratetable
 
