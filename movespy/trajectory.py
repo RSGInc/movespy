@@ -53,7 +53,7 @@ from __future__ import division
 import numpy
 
 MPH2MPS = 0.44704
-MPS2MPH = 2.23694
+MPS2MPH = 1. / MPH2MPS
 
 
 def _getVSP(speed_mps, accel_mpsps, mass_tonnes, mass_factor, alpha, beta, gamma):
@@ -131,15 +131,17 @@ def _getOpMode(speed_mph,accel_mphps_t0,accel_mphps_t1,accel_mphps_t2,vsp):
     if speed_mph < 1e-9:
         return 501
 
-    if speed_mph < 1:
+    if speed_mph < 1.0:
         return 1
 
-    if accel_mphps_t0 <= -2:
+    if accel_mphps_t0 <= -2.0:
         return 0
 
-    if all([accel_mphps_t0 < -1,
-            accel_mphps_t1 < -1,
-            accel_mphps_t2 < -1]):
+        
+
+    if all([accel_mphps_t0 < -1.,
+            accel_mphps_t1 < -1.,
+            accel_mphps_t2 < -1.]):
         return 0
 
     speed_bin = min(speed_mph // 25, 2)
@@ -149,6 +151,7 @@ def _getOpMode(speed_mph,accel_mphps_t0,accel_mphps_t1,accel_mphps_t2,vsp):
     opmode_lookup = {0:dict(zip(range(-1,11),[11,12,13,14,15,16,16,16,16,16,16,16])),
                     1:dict(zip(range(-1,11),[21,22,23,24,25,27,27,28,28,29,29,30])),
                     2:dict(zip(range(-1,11),[33,33,33,35,35,37,37,38,38,39,39,40]))}
+
 
     return opmode_lookup[speed_bin][vsp_bin]
 
@@ -231,11 +234,12 @@ def getVSPOpMode(veh, speed_mph, grade_percent, mass_tonnes, mass_factor, alpha,
     Parameters:
 
       - `veh`: a sequence of vehicle IDs
-      - `speed_mps`: current speed (meters per second)
-      - `current`: current grade (percent)
+      - `speed_mph`: current speed (miles per hour)
+      - `grade_percent`: current grade (percent)
       - `mass_tonnes`: mass of the vehicle (metric tons) 
       - `mass_factor`: the fixed mass factor 
       - `alpha, beta, gamma`: parameters to the VSP equation
+      - `simple`: Boolean indicating whether to use simplified grade calculation
 
     All parameters must be broadcastable to one-dimensional arrays
     with equal length and
