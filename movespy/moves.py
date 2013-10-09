@@ -211,11 +211,19 @@ class Moves(object):
 
         for cmd in [mcl + ['-i',importscript_loc],mcl + ['-r',runspec_loc]]:
 
-            sp = subprocess.Popen(cmd,
-                                  cwd = self.moves_dir,
-                                  stdout = subprocess.PIPE,
-                                  stderr = subprocess.STDOUT,
-                                  creationflags=0x08000000)
+            try:
+                sp = subprocess.Popen(cmd,
+                                      cwd = self.moves_dir,
+                                      stdout = subprocess.PIPE,
+                                      stderr = subprocess.STDOUT,
+                                      creationflags=0x08000000)
+            except:
+                print 'Error when executing:', cmd
+                print 'current working directory:', self.moves_dir
+                raise
+                
+                
+            
             out = ''
             for line in iter(sp.stdout.readline,""):
                 out += line
