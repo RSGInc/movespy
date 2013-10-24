@@ -103,24 +103,32 @@ class Output(object):
 
 class Moves(object):
     '''This is the class to use to run MOVES.
-    Just initialize an instance, then call the run method. For example:
+    Just initialize an instance, then call the run method. For example::
 
-    >>> links = {1: {'grade': -1.2,
-                     'length': 0.25,
-                     'road_type': 3,
-                     'source_distr': {21: 1.0},
-                     'speed': 34,
-                     'volume': 400}}
-    >>> activity =  {'age_distr': {21: {5: 1.0}},
-                     'county': 50027,
-                     'day_type': 5,
-                     'hour': 16,
-                     'month': 6,
-                     'year': 2015,
-                     'links': links}
-    >>> options = {'detail': 'average'}
-    >>> m = Moves(activity, options)
-    >>> emissions_out = m.run()
+        >>> links = {1: {'grade': -1.2,
+        ...              'length': 0.25,
+        ...              'road_type': 5,
+        ...              'source_distr': {21: 1.0},
+        ...              'speed': 34,
+        ...              'volume': 400}}
+
+        >>> activity =  {'age_distr': {21: {5: 1.0}},
+        ...              'county': 50027,
+        ...              'day_type': 5,
+        ...              'hour': 16,
+        ...              'month': 6,
+        ...              'year': 2015,
+        ...              'links': links}
+
+        >>> options = {'detail': 'average'}
+
+        >>> import movespy.moves
+        >>> moves = movespy.moves.Moves(activity, options)
+        >>> emissions_out = moves.run()
+        running MOVES ...
+        >>> total_CO = sum([row['quantity'] for row in emissions_out if row['pollutant'] == 2])
+        >>> print total_CO
+        102.772
         
     '''
 
@@ -543,26 +551,8 @@ def getDefaultAgeDistribution(year):
 
  
 if __name__ == "__main__":
-    links = {1: {'grade': -1.2,
-                 'length': 0.25,
-                 'road_type': 5,
-                 'source_distr': {21: 1.0},
-                 'speed': 34,
-                 'volume': 400}}
-
-    activity =  {'age_distr': {21: {5: 1.0}},
-                 'county': 50027,
-                 'day_type': 5,
-                 'hour': 16,
-                 'month': 6,
-                 'year': 2015,
-                 'links': links}
-
-    options = {'detail': 'average'}
-
-    moves = Moves(activity, options)
-    emissions_out = moves.run(2)
-    
+    import doctest
+    doctest.testmod()
     
     
         
