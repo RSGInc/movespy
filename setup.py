@@ -8,7 +8,7 @@ setup(name = 'movespy',
       maintainer = 'Eric S. Talbot',
       url = 'http://ericstalbot.github.com/movespy',
       description = 'Easy Python tools for EPA MOVES project-level analysis',
-      long_description = open('README.txt').read(),
+      long_description = open('README.rst').read(),
 
 
       packages = ['movespy'],
