@@ -4,6 +4,7 @@ docs/_build/
 build/
 dist/
 MANIFEST
+deploy.py
 *.pyc
 *.csv
 *.xml
