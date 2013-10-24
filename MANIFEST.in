@@ -1,4 +1,4 @@
 include setup.py
 include movespy/*.py
 include license.txt
-include README.txt
+include README.rst
