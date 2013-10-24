@@ -1,6 +1,7 @@
 from distutils.core import setup
+import movespy
 setup(name = 'movespy',
-      version = '0.1.3',
+      version = '0.1.4',
       
       
       author = 'Eric S. Talbot',
