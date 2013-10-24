@@ -132,32 +132,32 @@ Then we call the :meth:`movespy.moves.Moves.run` method on the :class:`movespy.m
 This kicks-off the MOVES run. When the run is done, the results are returned and assigned to the `emissions_out` variable. Now we can inspect the results. Let's say we want to know the total carbon monoxide emissions. We can type::
 
     # 2 is the ID for carbon monoxide 
-    total_CO = sum([row.quantity for row in emissions_out if row.pollutant == 2])
+    total_CO = sum([row['quantity'] for row in emissions_out if row['pollutant'] == 2])
 
 
 Putting it all together, our entire script for this analysis would be::
 
     links = {1: {'grade': -1.2,
-                 'length': 0.25,
-                 'road_type': 5,
-                 'source_distr': {21: 1.0}, 
-                 'speed': 34,
-                 'volume': 400}}
-    
+                'length': 0.25,
+                'road_type': 5,
+                'source_distr': {21: 1.0},
+                'speed': 34,
+                'volume': 400}}
+
     activity =  {'age_distr': {21: {5: 1.0}},
-                 'county': 50027, 
-                 'day_type': 5, 
+                 'county': 50027,
+                 'day_type': 5,
                  'hour': 16,
                  'month': 6,
                  'year': 2015,
-                 'links': links}     
+                 'links': links}
 
     options = {'detail': 'average'}
-    
+
     import movespy.moves
     moves = movespy.moves.Moves(activity, options)
-    emissions_out, activity_out = moves.run()
-    total_CO = sum([row.quantity for row in emissions_out if row.pollutant == 2])
+    emissions_out = moves.run()
+    total_CO = sum([row['quantity'] for row in emissions_out if row['pollutant'] == 2])
                  
 
 
@@ -226,8 +226,7 @@ To generate a look-up table of emissions rates, you will need to provide an acti
 to the activity argument for the :class:`movespy.moves.Moves` initializer, except that it does not include 
 the 'links' key/value pair. For example::
 
-    activity =  {'age_distr': dict.fromkeys((11,21,31,32,41,42,43,51,52,53,54,61,62),
-                                        {5: 1.0}),
+    activity =  {'age_distr': {11: {5: 1.0}, 21: {5: 1.0}},
                  'county': 50027,
                  'day_type': 5,
                  'hour': 16,
@@ -240,33 +239,20 @@ in the year 2015. To generate the look up table we first import the :mod:`movesp
 
     import movespy.ratetable
     
-Then we run the :func:`movespy.ratetable.getRateTable` function, with our activity dictionary as the argument::
+Then we run the :func:`movespy.ratetable.getRateTable` function, with our activity dictionary as the argument. We also limit the table to include only two operating modes and two source types. We also 
+provide an empty options dictionary::
 
-    table = movespy.ratetable.getRateTable(activity)
+    table = movespy.ratetable.getRateTable(activity,
+                                           {},    
+                                           operating_mode_ids = [0, 1],
+                                           source_type_ids = [11, 21])
     
-The result is a nested dict with keys for pollutant, source type, and operating mode. The 
-values are emissions rates in either grams or kJ per vehicle-hour. For example::
-
-    >>> print table[1][21][3]
-    123.456
+The result is a list of dictionaries. Each dict has keys for pollutant, source, opmode and quantity. The 
+quantity values are emissions rates in either grams or kJ per vehicle-hour. 
     
 If you want to create a flat file look up table, you could do::
      
-    header = ['pollutant', 'source_type', 'op_mode', 'rate']    
-          
-    rows = []
-    
-    for pollutant in table:
-        for source_type in table[pollutant]:
-            for op_mode in table[pollutant][source_type]:
-            
-                rate = table[pollutant][source_type][op_mode]
-                
-                rows.append(dict(pollutant = pollutant,
-                                 source_type = source_type,
-                                 op_mode = op_mode,
-                                 rate = rate))
-                                 
+    header = ['pollutant', 'source', 'opmode', 'quantity']    
                                  
     import csv
     with open('table.csv', 'wb') as f:
@@ -275,7 +261,7 @@ If you want to create a flat file look up table, you could do::
         
         d.writeheader()
         
-        d.writerows(rows)
+        d.writerows(table)
         
 
 
