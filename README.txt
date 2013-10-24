@@ -38,43 +38,51 @@ Usage
 The following code 
 executes a complete MOVES run and calculates the total CO emissions::
 
-    links = {1: {'grade': -1.2,
-                 'length': 0.25,
-                 'road_type': 5,
-                 'source_distr': {21: 1.0}, 
-                 'speed': 34,
-                 'volume': 400}}
-    
-    activity =  {'age_distr': {21: {5: 1.0}},
-                 'county': 50027, 
-                 'day_type': 5, 
-                 'hour': 16,
-                 'month': 6,
-                 'year': 2015,
-                 'links': links}     
+>>> links = {1: {'grade': -1.2,
+...              'length': 0.25,
+...              'road_type': 5,
+...              'source_distr': {21: 1.0}, 
+...              'speed': 34,
+...              'volume': 400}}  
 
-    options = {'detail': 'average'}
+>>> activity =  {'age_distr': {21: {5: 1.0}},
+...              'county': 50027, 
+...              'day_type': 5, 
+...              'hour': 16,
+...              'month': 6,
+...              'year': 2015,
+...              'links': links}     
+
+>>> options = {'detail': 'average'}
     
-    import movespy.moves
-    moves = movespy.moves.Moves(activity, options)
-    emissions_out, activity_out = moves.run()
-    total_CO = sum([row.quantity for row in emissions_out if row.pollutant == 2])
+>>> import movespy.moves
+>>> moves = movespy.moves.Moves(activity, options)
+>>> emissions_out = moves.run()
+running MOVES ...
+>>> total_CO = sum([row['quantity'] for row in emissions_out if row['pollutant'] == 2])
+>>> print total_CO
+102.772
         
 
         
 This code calculates VSP and operating mode for a vehicle trajectory
 dataset::
 
-    veh = [1,1,1,1,2,2,2,3,3,3,3,3]
-    speed = [3.,6.,1.,3.,8.,5.,6.,3.,9.,1.,3.,9.]
-    grade = [1.,2.,-3.,1.,2.,1.,3.,1.,-2.,3.,-4.,-2.]
-    mass, mass_factor, alpha, beta, gamma = 2., 1.5, 0.16, 0.0020, 0.00049    
+>>> veh = [1,1,1,1,2,2,2,3,3,3,3,3]
+>>> speed = [3.,6.,1.,3.,8.,5.,6.,3.,9.,1.,3.,9.]
+>>> grade = [1.,2.,-3.,1.,2.,1.,3.,1.,-2.,3.,-4.,-2.]
+>>> mass, mass_factor, alpha, beta, gamma = 2., 1.5, 0.16, 0.0020, 0.00049    
 
-    import movespy.trajectory
+>>> import movespy.trajectory
 
-    vsp, opmode = movespy.trajectory.getVSPOpMode(veh, speed, grade, mass, 
-        mass_factor, alpha, beta, gamma)
-        
+>>> vsp, opmode = movespy.trajectory.getVSPOpMode(veh, speed, grade, mass, 
+... mass_factor, alpha, beta, gamma)
+>>> print vsp[:3]
+[ 0.1462389   5.79980985 -1.45965811]
+>>> print opmode[:3]
+[12 13  0]
+
+     
         
         
 For detailed instructions and examples see the `user manual`_.
