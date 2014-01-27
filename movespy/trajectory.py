@@ -290,7 +290,7 @@ def getVSPOpMode(veh, speed_mph, grade_percent, mass_tonnes, mass_factor, alpha,
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-    #doctest.testfile("trajectory_tests.rst")
+
 
 
 

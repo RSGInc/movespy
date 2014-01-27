@@ -73,21 +73,24 @@ def getRateTable(activity,
 
     Example::
 
-        activity =  {'age_distr': {21: {5: 1.0},
-                                   11: {5: 1.0}},
-                     'county': 50027,
-                     'day_type': 5,
-                     'hour': 16,
-                     'month': 6,
-                     'year': 2015}
+        >>> activity =  {'age_distr': {21: {5: 1.0},
+        ...                        11: {5: 1.0}},
+        ...          'county': 50027,
+        ...          'day_type': 5,
+        ...          'hour': 16,
+        ...          'month': 6,
+        ...          'year': 2015}
 
-        options = {}
+        >>> options = {}
 
-
-        table =  getRateTable(activity,
-                              options,
-                              operating_mode_ids = [0, 1],
-                              source_type_ids = [11, 21])
+        >>> table =  getRateTable(activity,
+        ...                   options,
+        ...                   operating_mode_ids = [0, 1],
+        ...                   source_type_ids = [11, 21])
+        running MOVES ...
+        
+        >>> print sorted(table)[0]
+        {'source': 21, 'opmode': 0, 'pollutant': 1, 'quantity': 0.147307}
 
 
     '''
@@ -305,7 +308,9 @@ def getAverageSpeedRateTable(activity,
 
                 
 
-
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
 
 
     
