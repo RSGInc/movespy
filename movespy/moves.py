@@ -52,7 +52,7 @@ import datetime
 import MySQLdb
 
 import templates
-import movespy_settings
+
 
 
 
@@ -95,6 +95,26 @@ class Output(object):
 
     
 
+class Settings(object):
+
+    def __init__(self):
+        import movespy_settings as ms
+        self.dir = ms.moves_dir
+        self.db = ms.moves_db
+
+    def setDir(self, directory):
+        self.dir = directory
+        self._update_settings()
+
+    def setDb(self, database):
+        self.db = database
+        self._update_settings()
+
+    def _update_settings(self):
+        settings = 'moves_dir="{}"\nmoves_db="{}"'.format(self.dir, self.db)
+        with open('movespy/movespy_settings.py', 'wb') as f:
+            f.write(settings)
+            
         
 
     
@@ -172,7 +192,8 @@ class Moves(object):
 
         self.prefix = 'movespy_'+datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '_'
         self.wd = os.getcwd()
-        
+
+        import movespy_settings
         self.moves_dir = movespy_settings.moves_dir
         self.cur = MySQLdb.connect(host = 'localhost', db = movespy_settings.moves_db).cursor(MySQLdb.cursors.SSCursor)
 
