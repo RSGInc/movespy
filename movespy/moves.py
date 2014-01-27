@@ -73,8 +73,6 @@ class Output(object):
         
     '''
 
-    
-
     def __init__(self, cur, db, cleanup, fields):
         self.cleanup = cleanup
         self.cur = cur
@@ -82,8 +80,11 @@ class Output(object):
         self.fields = fields
 
     def __del__(self):
+        self.cur.nextset()
         if self.cleanup:
             self.cur.execute('drop database %s'%self.db)
+        self.cur.close()
+        
 
     def __iter__(self):
         return self.cur
