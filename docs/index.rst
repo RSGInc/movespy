@@ -51,23 +51,25 @@ Download the installer_ and run it.
 
 .. _installer: https://pypi.python.org/pypi/movespy
 
-Next, open the ``movespy_settings.py`` module in the ``movespy`` folder. You 
-should see something like this:
 
-::
+Next, checkout the settings::
 
-    moves_dir="C:\\Users\\Public\\MOVES20120410"
-    moves_db ="movesdb20120410"
+    >>> import movespy.moves
+    >>> s = movespy.moves.Settings()
+    >>> s.dir
+    'C:\\Users\\Public\\MOVES20120410'
+    >>> s.db
+    'movesdb20121030'
     
-You might need to edit the two text values inside the quotes. The first one 
-should be the complete path to your MOVES installation directory (the one 
-you noted when you installed MOVES). Remember to use double slashes. The 
-second one should be the name of the MOVES database (which is assumed to be 
-on the local MySQL server). If you're not what the database name is, it's 
-probably the same as the name of the installation folder, with "moves" in 
-lower case, and "db" inserted after "moves" and before the numbers. Once 
-you've make your edits, make sure to save the file.
+The `dir` setting is the complete path to your MOVES installation directory (the one 
+you noted when you installed MOVES). The `db` setting is name of your MOVES 
+database (which is assumed to be on the local MySQL server). You can change
+these settings if needed::
 
+    >>> s.setDir('path/to/moves/install/directory')
+    >>> s.setDb('nameofmovesdatabase')
+
+    
 Getting Help
 ============
 
