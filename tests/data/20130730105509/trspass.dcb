@@ -1,0 +1,9 @@
+TransModeler link passage table
+24
+"VehicleID",I,1,4,0,8,0,,,"Vehicle ID",,Sum,,0x0004
+"SegmentIndex",I,5,4,0,8,0,,,"Index to the segment",,Sum,,0x0004
+"TimeEnter",F,9,4,0,8,1,,,"Time vehicle entered the segment",,Sum,,0x0005
+"TimeCross",F,13,4,0,8,1,,,"Time vehicle reach the end of the segment",,Sum,,0x0005
+"TimeLeave",F,17,4,0,8,1,,,"Time vehicle left the segment",,Sum,,0x0005
+"StartPos",S,21,2,0,4,0,,,"Start position (0=Upstream, 100=downstream)",,Sum,,0x0003
+"EndPos",S,23,2,0,4,0,,,"End position (0=Upstream, 100=downstream)",,Sum,,0x0003

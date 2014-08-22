@@ -1,0 +1,9 @@
+TransModeler link passage table
+62
+"Index",I,1,4,0,6,0,,,"Index to the link",,Sum,,0x0004
+"ID",I,5,4,0,10,0,,,"ID of the link",,Sum,,0x0004
+"Type",I,9,4,0,10,0,,,"Link type (hex)",,Sum,,0x1004
+"SuperLink",I,13,4,0,10,0,,,"Index of the superlink",,Sum,,0x0004
+"Segments",S,17,2,0,6,0,,,"Number of segments",,Sum,,0x0003
+"Length",F,19,4,0,8,1,,,"Length of the link",,Sum,,0x0005
+"Names",C,23,40,0,40,0,,,"Name(s)",,Sum,,0x0007

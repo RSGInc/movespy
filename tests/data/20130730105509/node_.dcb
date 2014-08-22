@@ -1,0 +1,9 @@
+Tuning movement at intersections
+27
+"ID",I,1,4,0,10,0,,,"Turning movement ID",,Sum,,0x0004
+"Link",I,5,4,0,10,0,,,"Approach link ID",,Sum,,0x0004
+"Superlink",I,9,4,0,10,0,,,"Approach superlink ID",,Sum,,0x0004
+"Node",I,13,4,0,10,0,,,"Node ID",,Sum,,0x0004
+"Lane",I,17,4,0,10,0,,,"Approach lane ID",,Sum,,0x0004
+"Dir",C,21,3,0,3,0,,,"Direction",,Sum,,0x0007
+"Movements",C,24,4,0,4,0,,,"Turning movements",,Sum,,0x0007

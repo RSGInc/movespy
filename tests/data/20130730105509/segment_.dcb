@@ -1,0 +1,9 @@
+TransModeler segment data table
+24
+"Index",I,1,4,0,6,0,,,"Index to the segment",,Sum,,0x0004
+"ID",I,5,4,0,10,0,,,"ID of the segment",,Sum,,0x0004
+"Type",I,9,4,0,10,0,,,"Segment type (hex)",,Sum,,0x1004
+"Lanes",S,13,2,0,6,0,,,"Number of lanes",,Sum,,0x0003
+"Length",F,15,4,0,8,1,,,"Length of the segment",,Sum,,0x0005
+"SdFn",S,19,2,0,6,0,,,"ID of speed density function",,Sum,,0x0003
+"FreeSpd",F,21,4,0,8,1,,,"Free flow speed",,Sum,,0x0005

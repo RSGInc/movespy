@@ -1,0 +1,14 @@
+TransModeler vehicle trajectory (Imperial)
+44
+"ID",I,1,4,0,8,0,,,"Vehicle ID",,Sum,,0x0004
+"Time",F,5,4,0,7,1,,,"Seconds from midnight",,Sum,,0x0005
+"Longitude",I,9,4,0,10,0,,,"Longitude of front center",,Sum,,0x0004
+"Latitude",I,13,4,0,10,0,,,"Latitude of front center",,Sum,,0x0004
+"Heading",S,17,2,0,4,0,,,"Vehicle heading (0=north, clockwise)",,Sum,,0x0003
+"Segment",I,19,4,0,10,0,,,"Segment ID",,Sum,,0x0004
+"Dir",S,23,2,0,4,0,,,"Direction (0=AB, 1=BA)",,Sum,,0x0003
+"Lane",I,25,4,0,10,0,,,"Lane Index",,Sum,,0x0004
+"Offset",F,29,4,0,7,2,,,"Offset from center (ft)",,Sum,,0x0005
+"Distance",F,33,4,0,7,3,,,"Distance traveled (mile)",,Sum,,0x0005
+"Speed",F,37,4,0,7,2,,,"Speed (mph)",,Sum,,0x0005
+"Acceleration",F,41,4,0,7,2,,,"Acceleration (f/s^2)",,Sum,,0x0005

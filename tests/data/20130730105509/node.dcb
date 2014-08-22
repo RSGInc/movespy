@@ -1,0 +1,11 @@
+26100:300:12
+28
+"Interval",S,1,2,0,6,0,,,"Time interval",,Sum,,0x0003
+"ID",I,3,4,0,10,0,,,"Movement ID",,Sum,,0x0004
+"Delay",F,7,4,0,8,1,,,"Total delay experienced by vehicles during the interval (mins)",,Sum,,0x0005
+"Count",S,11,2,0,8,2,,,"Number of vehicles that experienced delay",,Sum,,0x0003
+"Vehicles",S,13,2,0,8,2,,,"Total number of vehicles",,Sum,,0x0003
+"StopDelay",F,15,4,0,8,1,,,"Total stop delay experienced by vehicles during the interval (mins)",,Sum,,0x0005
+"Stops",F,19,4,0,6,2,,,"Total number of stops",,Sum,,0x0005
+"CtrlDelay",F,23,4,0,8,1,,,"Total control delay experienced by vehicles during the interval (mins)",,Sum,,0x0005
+"CtrlCount",S,27,2,0,8,2,,,"Control delay movement count",,Sum,,0x0003

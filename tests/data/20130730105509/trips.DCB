@@ -1,0 +1,35 @@
+TransModeler Trip Table
+83
+"ID",I,1,4,0,8,0,,,"Vehicle ID",,Sum,,0x0004
+"OriID",I,5,4,0,8,0,,,"Origin ID",,Sum,,0x0004
+"DesID",I,9,4,0,8,0,,,"Destination ID",,Sum,,0x0004
+"OriType",C,13,1,0,1,0,,,"Origin type|(1=centroid, 2=node, 3=link)",,Sum,,0x0007
+"DesType",C,14,1,0,1,0,,,"Destination type|(1=centroid, 2=node, 3=link)",,Sum,,0x0007
+"OriPos",S,15,1,0,6,0,,,"Start position in origin link|(0=up, 100=dn)",,Sum,,0x0002
+"DesPos",S,16,1,0,6,0,,,"Stop position in destination link|(0=up, 100=dn)",,Sum,,0x0002
+"Class",C,17,1,0,1,0,,,"Vehicle class",,Sum,,0x0007
+"Group",C,18,1,0,1,0,,,"Routing group",,Sum,,0x0007
+"Preemption",C,19,1,0,1,0,,,"Preemption type",,Sum,,0x0007
+"PathFixed",C,20,1,0,1,0,,,"Whether pretrip path is subject to dyanmic update due to congestion or pricing",,Sum,,0x0007
+"Occupants",S,21,2,0,4,0,,,"Number of occupants",,Sum,,0x0003
+"VOT",F,23,4,0,6,2,,,"Value of time",,Sum,,0x0005
+"ETC",C,27,1,0,1,0,,,"Electronic toll collection",,Sum,,0x0007
+"Transit",C,28,1,0,1,0,,,"Transit vehicles",,Sum,,0x0007
+"Truck",C,29,1,0,1,0,,,"Truck",,Sum,,0x0007
+"UserA",C,30,1,0,1,0,,,"User defined type or group",,Sum,,0x0007
+"UserB",C,31,1,0,1,0,,,"User defined type or group",,Sum,,0x0007
+"Probe",C,32,1,0,1,0,,,"Probe vehicle for data collection",,Sum,,0x0007
+"Status",C,33,1,0,1,0,,,"Trip status",,Sum,,0x0007
+"OriLink",I,34,4,0,8,0,,,"ID of the entry link|(+/- indicates AB or BA direction)",,Sum,,0x0004
+"Path",I,38,4,0,8,0,,,"ID of the path",,Sum,,0x0004
+"EndLink",I,42,4,0,8,0,,,"ID of the exit link|(+/- indicates AB or BA direction)",,Sum,,0x0004
+"DepTime",F,46,4,0,8,1,,,"Departure time (seconds from midnight)",,Sum,,0x0005
+"ExpArrTime",F,50,4,0,8,1,,,"Expected arrival time (seconds from midnight)",,Sum,,0x0005
+"ArrTime",F,54,4,0,8,1,,,"Arrival time (seconds from midnight)",,Sum,,0x0005
+"Mileage",F,58,4,0,8,3,,,"Distance traveled (miles)",,Sum,,0x0005
+"EntryDelay",F,62,4,0,8,2,,,"Time waited for entering the network (minutes)",,Sum,,0x0005
+"Delay",F,66,4,0,8,2,,,"Total delay (minutes)",,Sum,,0x0005
+"StopTime",F,70,4,0,8,2,,,"Stop delay (minutes)",,Sum,,0x0005
+"Stops",I,74,4,0,8,0,,,"Number of stops",,Sum,,0x0004
+"Calibration",S,78,2,0,6,0,,,"Custom variable for calibration",,Sum,,0x0003
+"Source",C,80,4,0,4,0,,,"The source matrix, trip table, or process from which the trip was generated",,Sum,,0x0007

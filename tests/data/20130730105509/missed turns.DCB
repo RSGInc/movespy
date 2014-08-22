@@ -1,0 +1,10 @@
+Table for vehicles which missed their paths
+26
+"ID",I,1,4,0,8,0,,,"Vehicle ID",,Sum,,0x0004
+"Time",I,5,4,0,8,0,,,"Time vehicle used the facility",,Sum,,0x0004
+"FromLink",I,9,4,0,8,0,,,"Link where the vehicle missed the turn",,Sum,,0x0004
+"Node",I,13,4,0,8,0,,,"Node where the vehicle missed the turn",,Sum,,0x0004
+"ToLink",I,17,4,0,8,0,,,"Link into which the vehicle should have turned",,Sum,,0x0004
+"ReLink",I,21,4,0,8,0,,,"Link ended or rerouted from",,Sum,,0x0004
+"Lost",S,25,1,0,1,0,,,"0 if vehicle successfully rerouted to destination, 1 otherwise",,Sum,,0x0002
+"Intentional",S,26,1,0,1,0,,,"1 if vehicle abandoned the turn after a long delay, 0 if unintended",,Sum,,0x0002

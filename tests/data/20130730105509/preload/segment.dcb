@@ -1,0 +1,8 @@
+26100:60:60
+24
+"Vehicles",I,1,4,0,8,0,,,"Number of Vehicles",,Sum,,0x0004
+"PCEs",F,5,4,0,8,1,,,"Number of Total Passenger Car Equivalents",,Sum,,0x0005
+"AverageSpd",F,9,4,0,8,1,,,"Average Speed",,Sum,,0x0005
+"StdDev",F,13,4,0,8,1,,,"Standard Deviation of Speed",,Sum,,0x0005
+"Density",F,17,4,0,8,1,,,"PCE/mi/ln in merge or diverge influence area",,Sum,,0x0005
+"PTSF",F,21,4,0,8,3,,,"Percent time spent following (0-1)",,Sum,,0x0005

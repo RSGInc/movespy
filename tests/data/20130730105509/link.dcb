@@ -1,0 +1,11 @@
+26100:300:12
+26
+"Delay",F,1,4,0,8,2,,,"Total delay experienced by vehicles during the interval (mins)",,Sum,,0x0005
+"Count",S,5,2,0,6,0,,,"Number of vehicles that experienced delay",,Sum,,0x0003
+"Vehicles",S,7,2,0,8,0,,,"Total number of vehicles",,Sum,,0x0003
+"StopDelay",F,9,4,0,8,1,,,"Total stop delay experienced by vehicles during the interval (mins)",,Sum,,0x0005
+"Stops",F,13,4,0,6,2,,,"Total number of stops",,Sum,,0x0005
+"MinSpillback",S,17,2,0,6,0,,,"Minimum length of spillback queue",,Sum,,0x0003
+"MaxSpillback",S,19,2,0,6,0,,,"Maximum length of spillback queue",,Sum,,0x0003
+"CtrlDelay",F,21,4,0,8,2,,,"Total control delay experienced by vehicles during the interval (mins)",,Sum,,0x0005
+"CtrlCount",S,25,2,0,6,0,,,"Number of vehicles for which control delay has been counted",,Sum,,0x0003
