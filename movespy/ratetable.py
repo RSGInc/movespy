@@ -37,6 +37,8 @@ Use these functions to generate lookup tables for emissions rates.
 
 import moves
 
+st_ids = (11,21,31,32,41,42,43,51,52,53,54,61,62)
+
 
 def getRateTable(activity,
                  options,
@@ -102,7 +104,7 @@ def getRateTable(activity,
                       27,28,29,30,33,35,37,38,39,40,501)
 
     if source_type_ids is None:
-        source_type_ids = (11,21,31,32,41,42,43,51,52,53,54,61,62)
+        source_type_ids = st_ids
         
     assert all([st in activity['age_distr'] for st in source_type_ids])
 
@@ -228,7 +230,7 @@ def getAverageSpeedRateTable(activity,
     '''
 
     if source_type_ids is None:
-        source_type_ids = (11,21,31,32,41,42,43,51,52,53,54,61,62)
+        source_type_ids = st_ids
 
 
     assert all([st in activity['age_distr'] for st in source_type_ids])
