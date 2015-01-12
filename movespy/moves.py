@@ -195,7 +195,11 @@ class Moves(object):
 
         import movespy_settings
         self.moves_dir = movespy_settings.moves_dir
-        self.cur = MySQLdb.connect(host = 'localhost', db = movespy_settings.moves_db).cursor(MySQLdb.cursors.SSCursor)
+        self.cur = MySQLdb.connect(
+            host = 'localhost', 
+            db = movespy_settings.moves_db,
+            user = movespy_settings.user_name,
+            passwd = movespy_settings.password).cursor(MySQLdb.cursors.SSCursor)
 
         self.runspec_template = templates.runspec_template
         self.importscript_template = templates.importscript_template
@@ -538,7 +542,8 @@ def getDefaultAgeDistribution(year):
     Moves class initializer activity parameter.
 
     '''
-
+    import movespy_settings
+    reload(movespy_settings)
     root = et.fromstring(templates.mean_age_run_spec)
     root.find('timespan').find('year').set('key', str(year))
     root.find('outputdatabase').set('databasename', 'average_age_dist_output')
@@ -550,7 +555,11 @@ def getDefaultAgeDistribution(year):
                'gov.epa.otaq.moves.master.commandline.MOVESCommandLine']
 
     subprocess.check_call(mcl + ['-r',runspec_loc], cwd = movespy_settings.moves_dir)
-    cur = MySQLdb.connect(host = 'localhost', db = movespy_settings.moves_db).cursor()
+    cur = MySQLdb.connect(
+        host = 'localhost', 
+        db = movespy_settings.moves_db,
+        user = movespy_settings.user_name,
+        passwd = movespy_settings.password).cursor()
     sql = '''select sourcetypeid, ageid, population from movesexecution.sourcetypeagepopulation
                 where yearid = %s'''%year
     cur.execute(sql)
