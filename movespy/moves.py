@@ -299,9 +299,12 @@ class Moves(object):
             
 
         db = '{}output'.format(self.prefix)
-        
-        cur = MySQLdb.connect(host = 'localhost',
-                              db = db).cursor(MySQLdb.cursors.SSDictCursor)
+        import movespy_settings
+        cur = MySQLdb.connect(
+            host = 'localhost',
+            db = db,
+            user = movespy_settings.user_name,
+            passwd = movespy_settings.password).cursor(MySQLdb.cursors.SSDictCursor)
 
 
         cur.execute('''select  linkid as link,pollutantid as pollutant,
@@ -418,11 +421,12 @@ class Moves(object):
 
     @property
     def fuel_supply_table(self):
-        sql = '''   select countyID, year.fuelYearID AS fuelYearID, monthGroupID,
+        sql = '''   select fuelRegionID, year.fuelYearID AS fuelYearID, monthGroupID,
                         fuelFormulationID, marketShare, marketShareCV
                     from fuelsupply
                     LEFT JOIN year ON fuelsupply.fuelYearID = year.fuelYearID
-                    WHERE countyID = %s AND yearID = %s AND monthGroupID = %s'''
+                    LEFT JOIN regioncounty ON fuelsupply.fuelRegionID = regioncounty.regionID
+                    WHERE regioncounty.countyID = %s AND yearID = %s AND monthGroupID = %s'''
         sql = sql%(self.activity['county'],self.activity['year'],self.activity['month'])
         return self._getCSV(sql)
     
@@ -434,7 +438,8 @@ class Moves(object):
                     (select fuelFormulationID
                     from fuelsupply
                     LEFT JOIN year ON fuelsupply.fuelYearID = year.fuelYearID
-                    WHERE countyID = %s AND yearID = %s AND monthGroupID = %s)'''
+                    LEFT JOIN regioncounty ON fuelsupply.fuelRegionID = regioncounty.regionID
+                    WHERE regioncounty.countyID = %s AND yearID = %s AND monthGroupID = %s)'''
         sql = sql%(self.activity['county'],self.activity['year'],self.activity['month'])
         return self._getCSV(sql)
     
