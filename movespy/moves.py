@@ -154,16 +154,45 @@ class Moves(object):
     '''
 
 
-    tablenames = ['links', 'source_distr', 'age_distr', 'fuel_supply', 'fuel_form', 'meteor', 'opmode_distr', 'drive_schedule']
 
-    tablepaths = ['link/parts/link/filename',
-                           'linksourcetypehour/parts/linkSourceTypeHour/filename',
-                           'agedistribution/parts/sourceTypeAgeDistribution/filename',
-                           'fuel/parts/FuelSupply/filename',
-                           'fuel/parts/FuelFormulation/filename',
-                           'zonemonthhour/parts/zoneMonthHour/filename',
-                           'linkopmodedistribution/parts/opModeDistribution/filename',
-                  'driveschedulesecondlink/parts/driveScheduleSecondLink/filename']
+                  
+                  
+    table_name_path = {
+        #always required
+        
+            #defaults not available
+                'links':('link','link'),
+                'source_distr':('linksourcetypehour','linkSourceTypeHour'),
+                'age_distr':('agedistribution','sourceTypeAgeDistribution'),
+            
+            #defaults available
+        
+                'meteor':('zonemonthhour','zoneMonthHour'),
+                
+                'fuel_usage':('fuel','FuelUsageFraction'),
+                'fuel_supply':('fuel','fuelSupply'),
+                'fuel_form':('fuel','FuelFormulation'),
+                #'AVFT' #??? is this always required? (I don't think so)
+        
+        
+        #optional
+            
+            #defaults not available
+            
+            
+                'opmode_distr':('linkopmodedistribution','opModeDistribution'),
+                'drive_schedule':('driveschedulesecondlink','driveScheduleSecondLink'),
+                
+                #'retrofit'
+                
+                #'off_network',
+                #'hotelling',
+
+            #defaults available
+            
+                #'im_coverage'
+
+    }
 
     process_pollutant = {1:(1,2,3,30,91,101,102,111,112),
                      9:(116,),
@@ -225,9 +254,9 @@ class Moves(object):
         importscript_loc = os.path.join(wd, prefix+'importscript.xml')
         runspec_loc = os.path.join(wd, prefix+'runspec.xml')
 
-        tablelocations = [os.path.join(wd, prefix+tname+'.csv') for tname in Moves.tablenames]
+        tablelocations = [os.path.join(wd, prefix+tname+'.csv') for tname in Moves.table_name_path]
 
-        for tname, tloc in zip(Moves.tablenames, tablelocations):
+        for tname, tloc in zip(Moves.table_name_path, tablelocations):
             open(tloc,'w').write(getattr(self,'%s_table'%tname))      
 
 
@@ -408,15 +437,6 @@ class Moves(object):
 
         return result
             
-            
-            
-
-            
-    
-        
-    
-
-
 
 
     @property
@@ -442,6 +462,17 @@ class Moves(object):
                     WHERE regioncounty.countyID = %s AND yearID = %s AND monthGroupID = %s)'''
         sql = sql%(self.activity['county'],self.activity['year'],self.activity['month'])
         return self._getCSV(sql)
+        
+    @property
+    def fuel_usage_table(self):
+        #required for running moves
+        sql = '''   select * from fuelusagefraction
+                    where countyid = {}
+                    and fuelyearid = {}'''
+        sql = sql.format(self.activity['county'], self.activity['year'])
+        return self._getCSV(sql)
+        
+
     
     @property
     def meteor_table(self):
@@ -484,7 +515,8 @@ class Moves(object):
         self._setSelections(filters)
         importer.find('databaseselection').set('databasename',self.prefix + 'input')
 
-        for tname, tpath in zip(Moves.tablenames, Moves.tablepaths):
+        for tname, tpath in Moves.table_name_path:
+            tpath = '{}/parts/{}/filename'.format(*tpath)
             importer.find(tpath).text = os.path.join(wd, prefix+tname+'.csv')
             
         return et.tostring(root)
