@@ -170,7 +170,7 @@ class Moves(object):
                 'meteor':('zonemonthhour','zoneMonthHour'),
                 
                 'fuel_usage':('fuel','FuelUsageFraction'),
-                'fuel_supply':('fuel','fuelSupply'),
+                'fuel_supply':('fuel','FuelSupply'),
                 'fuel_form':('fuel','FuelFormulation'),
                 #'AVFT' #??? is this always required? (I don't think so)
         
@@ -515,7 +515,7 @@ class Moves(object):
         self._setSelections(filters)
         importer.find('databaseselection').set('databasename',self.prefix + 'input')
 
-        for tname, tpath in Moves.table_name_path:
+        for tname, tpath in Moves.table_name_path.items():
             tpath = '{}/parts/{}/filename'.format(*tpath)
             importer.find(tpath).text = os.path.join(wd, prefix+tname+'.csv')
             
