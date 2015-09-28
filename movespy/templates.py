@@ -389,6 +389,141 @@ useParameters   No
 """
 
 mean_age_run_spec = """
+<runspec>
+	<description><![CDATA[]]></description>
+	<modelscale value="Inv"/>
+	<modeldomain value="NATIONAL"/>
+	<geographicselections>
+		<geographicselection type="NATION" key="0" description=""/>
+	</geographicselections>
+	<timespan>
+		<year key="2041"/>
+		<month id="1"/>
+		<month id="2"/>
+		<month id="3"/>
+		<month id="4"/>
+		<month id="5"/>
+		<month id="6"/>
+		<month id="7"/>
+		<month id="8"/>
+		<month id="9"/>
+		<month id="10"/>
+		<month id="11"/>
+		<month id="12"/>
+		<day id="2"/>
+		<day id="5"/>
+		<beginhour id="1"/>
+		<endhour id="24"/>
+		<aggregateBy key="Year"/>
+	</timespan>
+	<onroadvehicleselections>
+		<onroadvehicleselection fueltypeid="3" fueltypedesc="Compressed Natural Gas (CNG)" sourcetypeid="42" sourcetypename="Transit Bus"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="62" sourcetypename="Combination Long-haul Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="61" sourcetypename="Combination Short-haul Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="41" sourcetypename="Intercity Bus"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="32" sourcetypename="Light Commercial Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="54" sourcetypename="Motor Home"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="11" sourcetypename="Motorcycle"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="21" sourcetypename="Passenger Car"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="31" sourcetypename="Passenger Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="51" sourcetypename="Refuse Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="43" sourcetypename="School Bus"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="53" sourcetypename="Single Unit Long-haul Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="52" sourcetypename="Single Unit Short-haul Truck"/>
+		<onroadvehicleselection fueltypeid="2" fueltypedesc="Diesel Fuel" sourcetypeid="42" sourcetypename="Transit Bus"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="62" sourcetypename="Combination Long-haul Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="61" sourcetypename="Combination Short-haul Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="41" sourcetypename="Intercity Bus"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="32" sourcetypename="Light Commercial Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="54" sourcetypename="Motor Home"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="11" sourcetypename="Motorcycle"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="21" sourcetypename="Passenger Car"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="31" sourcetypename="Passenger Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="51" sourcetypename="Refuse Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="43" sourcetypename="School Bus"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="53" sourcetypename="Single Unit Long-haul Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="52" sourcetypename="Single Unit Short-haul Truck"/>
+		<onroadvehicleselection fueltypeid="1" fueltypedesc="Gasoline" sourcetypeid="42" sourcetypename="Transit Bus"/>
+	</onroadvehicleselections>
+	<offroadvehicleselections>
+	</offroadvehicleselections>
+	<offroadvehiclesccs>
+	</offroadvehiclesccs>
+	<roadtypes>
+		<roadtype roadtypeid="5" roadtypename="Urban Unrestricted Access"/>
+	</roadtypes>
+	<pollutantprocessassociations>
+		<pollutantprocessassociation pollutantkey="2" pollutantname="Carbon Monoxide (CO)" processkey="1" processname="Running Exhaust"/>
+	</pollutantprocessassociations>
+	<databaseselections>
+	</databaseselections>
+	<internalcontrolstrategies>
+<internalcontrolstrategy classname="gov.epa.otaq.moves.master.implementation.ghg.internalcontrolstrategies.rateofprogress.RateOfProgressStrategy"><![CDATA[
+useParameters	No
+
+]]></internalcontrolstrategy>
+	</internalcontrolstrategies>
+	<inputdatabase servername="" databasename="" description=""/>
+	<uncertaintyparameters uncertaintymodeenabled="false" numberofrunspersimulation="0" numberofsimulations="0"/>
+	<geographicoutputdetail description="NATION"/>
+	<outputemissionsbreakdownselection>
+		<modelyear selected="true"/>
+		<fueltype selected="true"/>
+		<emissionprocess selected="true"/>
+		<onroadoffroad selected="true"/>
+		<roadtype selected="true"/>
+		<sourceusetype selected="true"/>
+		<movesvehicletype selected="false"/>
+		<onroadscc selected="false"/>
+		<offroadscc selected="false"/>
+		<estimateuncertainty selected="false" numberOfIterations="2" keepSampledData="false" keepIterations="false"/>
+		<sector selected="false"/>
+		<engtechid selected="false"/>
+		<hpclass selected="false"/>
+	</outputemissionsbreakdownselection>
+	<outputdatabase servername=" " databasename="" description=""/>
+	<outputtimestep value="Year"/>
+	<outputvmtdata value="false"/>
+	<outputsho value="false"/>
+	<outputsh value="false"/>
+	<outputshp value="false"/>
+	<outputshidling value="false"/>
+	<outputstarts value="false"/>
+	<outputpopulation value="false"/>
+	<scaleinputdatabase servername="" databasename="" description=""/>
+	<pmsize value="0"/>
+	<outputfactors>
+		<timefactors selected="true" units="Years"/>
+		<distancefactors selected="false" units="Miles"/>
+		<massfactors selected="true" units="Grams" energyunits="KiloJoules"/>
+	</outputfactors>
+	<savedata>
+
+	</savedata>
+
+	<donotexecute>
+
+		<class name="gov.epa.otaq.moves.master.framework.EmissionCalculator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.general.MeteorologyGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.AverageSpeedOperatingModeDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.EvaporativeEmissionsOperatingModeDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.FuelEffectsGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.internalcontrolstrategies.onroadretrofit.OnRoadRetrofitStrategy"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.internalcontrolstrategies.rateofprogress.RateOfProgressStrategy"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.LinkOperatingModeDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.MesoscaleLookupOperatingModeDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.OperatingModeDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.ProjectTAG"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.SourceBinDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.StartOperatingModeDistributionGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.TankFuelGenerator"/>
+		<class name="gov.epa.otaq.moves.master.implementation.ghg.TankTemperatureGenerator"/>
+	</donotexecute>
+
+	<generatordatabase shouldsave="false" servername="" databasename="" description=""/>
+		<donotperformfinalaggregation selected="false"/>
+	<lookuptableflags scenarioid="" truncateoutput="false" truncateactivity="false"/>
+</runspec>
 
 """
 
