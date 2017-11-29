@@ -206,8 +206,22 @@ def getSourceAttr():
 
     cur = con.cursor()
 
-    cur.execute('''select sourceTypeID, sourceTypeName, fixedMassFactor,
-                   rollingTermA, rotatingTermB, dragTermC, sourceMass from sourceusetype''')
+    cur.execute('''
+        select
+            sourceusetype.sourceTypeID as sourceTypeID,
+            sourceTypeName,
+            AVG(fixedMassFactor),
+            AVG(rollingTermA), AVG(rotatingTermB), AVG(dragTermC),
+            AVG(sourceMass)
+        from
+            sourceusetype
+        join
+            sourceusetypephysics
+        on
+            sourceusetype.sourceTypeID = sourceusetypephysics.sourceTypeID
+        group by
+            sourceusetype.sourceTypeID
+    ''')
 
     result = {}
 
