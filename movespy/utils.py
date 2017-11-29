@@ -1,26 +1,26 @@
 # Copyright (c) 2013, Resource Systems Group, Inc.
 # All rights reserved.
-# 
-# Redistribution and use in source and binary forms, with or without 
+#
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-#     - Redistributions of source code must retain the above copyright notice, 
+#
+#     - Redistributions of source code must retain the above copyright notice,
 #       this list of conditions and the following disclaimer.
-#     
-#     - Redistributions in binary form must reproduce the above copyright notice, 
-#       this list of conditions and the following disclaimer in the documentation 
+#
+#     - Redistributions in binary form must reproduce the above copyright notice,
+#       this list of conditions and the following disclaimer in the documentation
 #       and/or other materials provided with the distribution.
-# 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE 
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
 ''' Functions for calculating total emissions from each of a collection
@@ -35,7 +35,7 @@ Eaxmple::
 
 
     #create an emissions rate lookup table
-    
+
     year = 2010
 
     age_distr = movespy.moves.getDefaultAgeDistribution(year)
@@ -92,7 +92,7 @@ def getOpModeDistr(veh, speed_mph, grade_percent, veh_attr, simple = False):
     for veh_id in veh:
 
         source_types.append(veh_attr[veh_id]['source_type'])
-        
+
 
         mass_tonnes = veh_attr[veh_id]['mass_tonnes']
 
@@ -105,7 +105,7 @@ def getOpModeDistr(veh, speed_mph, grade_percent, veh_attr, simple = False):
         params.append([mass_tonnes, mass_factor, alpha, beta, gamma])
 
 
-    mass_tonnes, mass_factor, alpha, beta, gamma = zip(*params)    
+    mass_tonnes, mass_factor, alpha, beta, gamma = zip(*params)
 
 
     opmodes = movespy.trajectory.getVSPOpMode(veh,
@@ -146,7 +146,7 @@ def getTotalEmissions(opmode_distr, ratetable):
 
     opmode_distr: an opmode distribution as returned by getOpModeDistr
 
-    ratetable: a rate table as returned by ratetable.getRateTable 
+    ratetable: a rate table as returned by ratetable.getRateTable
     '''
 
 
@@ -160,7 +160,7 @@ def getTotalEmissions(opmode_distr, ratetable):
                                          x['opmode'] == opmode]),
                           ratetable)
 
-            
+
 
             hours = seconds / 3600.
             for row in rows:
@@ -168,7 +168,7 @@ def getTotalEmissions(opmode_distr, ratetable):
                 pollutant = row['pollutant']
 
 
-                
+
 
                 rate = row['quantity']
 
@@ -187,10 +187,10 @@ def getSourceAttr():
     '''Queries the moves database to get source use type attributes.
     Returns a dictionary keyed by source use type ID. Values
     are dictionaries with keys sourcename, massfactor, alpha, beta, gamma
-    and default mass. Mass is in metric tonnes. 
+    and default mass. Mass is in metric tonnes.
     '''
 
-    
+
 
     #I noticed that the most recent moves db has a new table that has vsp params
     #that vary by model year - this is not addressed here or anywhere else (yet)
@@ -198,10 +198,11 @@ def getSourceAttr():
     import MySQLdb
 
     import movespy_settings
-    
-    con = MySQLdb.connect(host = 'localhost',
-                          db = movespy_settings.moves_db)
 
+    con = MySQLdb.connect(host = 'localhost',
+                          db = movespy_settings.moves_db,
+                          user = movespy_settings.user_name,
+                          passwd = movespy_settings.password)
 
     cur = con.cursor()
 
@@ -221,34 +222,3 @@ def getSourceAttr():
                                      default_mass = default_mass)
 
     return result
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-
-    
-        
-
-    
-
-
-
-
-
-    
-
-
-    
-
-    
